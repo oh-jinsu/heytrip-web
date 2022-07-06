@@ -92,17 +92,6 @@ button.chip.active {
 	background-color: var(--secondary-color);
 }
 
-button.chip:hover {
-	border: 1px solid transparent;
-
-	color: white;
-	background-color: var(--primary-color);
-}
-
-input[type="submit"]:hover {
-	background-color: var(--primary-color);
-}
-
 label {
 	display: block;
 
@@ -131,4 +120,17 @@ input:focus {
 
 label>input {
 	margin-top: 4px !important;
+}
+
+@media (hover) {
+	button.chip:hover {
+		border: 1px solid transparent;
+	
+		color: white;
+		background-color: var(--secondary-color);
+	}
+
+	input[type="submit"]:hover {
+		background-color: var(--primary-color);
+	}
 }
