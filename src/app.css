@@ -71,7 +71,7 @@ button:not(.chip), input[type="submit"] {
 	transition: background-color .2s ease;
 }
 
-input[type="button"].chip {
+button.chip {
 	cursor: pointer;
 
 	border-radius: 8px;
@@ -85,7 +85,7 @@ input[type="button"].chip {
 	padding: 4px 8px;
 }
 
-input[type="button"].chip.active, input[type="button"].chip:hover {
+button.chip.active, button.chip:hover {
 	border: 1px solid transparent;
 
 	color: white;
