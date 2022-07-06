@@ -42,6 +42,15 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 
+button, input[type="submit"] {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	 -khtml-user-select: none;
+		 -moz-user-select: none;
+			-ms-user-select: none;
+					user-select: none;
+}
+
 button:not(.chip), input[type="submit"] {
 	cursor: pointer;
 
