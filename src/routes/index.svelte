@@ -188,29 +188,34 @@
 	<label> 관심 지역 </label>
 	<div class="chip-container">
 		{#each locations as location}
-			<button
-				type="button"
-				class="chip {$selectedLocations.includes(location) && 'active'}"
-				on:click={() => onSelectLocation(location)}
-				>{location}
-			</button>
+			{#if $selectedLocations.includes(location)}
+				<button type="button" class="chip active" on:click={() => onSelectLocation(location)}
+					>{location}
+				</button>
+			{:else}
+				<button type="button" class="chip" on:click={() => onSelectLocation(location)}>
+					{location}
+				</button>
+			{/if}
 		{/each}
 	</div>
 	{#if locationMessage}
 		<p class="error">{locationMessage}</p>
 	{/if}
-  {$selectedLocations}
+	{$selectedLocations}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 분야 </label>
 	<div class="chip-container">
 		{#each categories as category}
-			<button
-				type="button"
-				class="chip {$selectedCategories.includes(category) && 'active'}"
-				on:click={() => onSelectCategory(category)}
-			>
-				{category}
-			</button>
+		  {#if $selectedCategories.includes(category)}
+				<button type="button" class="chip active" on:click={() => onSelectCategory(category)}>
+          {category}
+				</button>
+			{:else}
+				<button type="button" class="chip" on:click={() => onSelectCategory(category)}>
+					{category}
+				</button>
+			{/if}
 		{/each}
 	</div>
 	{#if categoryMessage}
