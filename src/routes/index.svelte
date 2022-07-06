@@ -49,9 +49,13 @@
 </svelte:head>
 
 <h1>Heytrip</h1>
-<p>🥱 모처럼 있는 휴일을 뻔하게 보내지 않고 매번 특별한 경험을 남기고 싶은 여러분께.</p>
-<p>😫 다가오는 주말엔 또 어디를 가야 좋을지 여기저기 찾아다니는 일이 귀찮은 여러분께.</p>
-<p>📨 매주 지금이 아니면 갈 수 없는 장소들을 찾아 성향에 꼭 맞게끔 추려 보내드릴게요.</p>
+<p>
+  🥱 모처럼 있는 휴일을 뻔하게 보내지 않고 매번 특별한 경험을 남기고 싶은 여러분께.
+  <br/>
+  😫 다가오는 주말엔 또 어디를 가야 좋을지 여기저기 찾아다니는 일이 귀찮은 여러분께.
+  <br/>
+  📨 매주 지금이 아니면 갈 수 없는 장소들을 찾아 성향에 꼭 맞게끔 간추려 보내드릴게요.
+</p>
 <form on:submit|preventDefault={onSubmit}>
   <label>
     이메일
@@ -70,21 +74,13 @@
 
 <style>
 	h1 {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
 		font-size: 64px;
 		font-family: 'Happiness-Sans-Title';
-		height: 92px;
+    text-align: center;
 	}
 
   label {
-    margin-top: 16px;
-  }
-
-  p + p {
-    margin-top: 0px;
+    margin-top: 8px;
   }
 
   button {
