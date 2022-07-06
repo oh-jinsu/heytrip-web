@@ -208,13 +208,12 @@ import { onDestroy } from "svelte";
   </label>
   <div class="chip-container">
     {#each locations as location}
-      <button
+      <input
         type="button"
         class="chip {$selectedLocations.includes(location) && "active"}"
         on:click={() => onSelectLocation(location)}
-      >
-        {location}
-      </button>
+        value={location}
+      />
     {/each}
   </div>
   {#if locationMessage}
@@ -226,13 +225,12 @@ import { onDestroy } from "svelte";
   </label>
   <div class="chip-container">
     {#each categories as category}
-      <button
+      <input
         type="button"
         class="chip {$selectedCategories.includes(category) && "active"}"
         on:click={() => onSelectCategory(category)}
-      >
-        {category}
-      </button>
+        value={category}
+      />
     {/each}
   </div>
   {#if categoryMessage}

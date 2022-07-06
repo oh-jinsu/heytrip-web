@@ -42,13 +42,15 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 
-button, input[type="submit"] {
+button, input[type="button"], input[type="submit"] {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	 -khtml-user-select: none;
 		 -moz-user-select: none;
 			-ms-user-select: none;
 					user-select: none;
+
+	color: inherit;
 }
 
 button:not(.chip), input[type="submit"] {
@@ -69,7 +71,7 @@ button:not(.chip), input[type="submit"] {
 	transition: background-color .2s ease;
 }
 
-button.chip {
+input[type="button"].chip {
 	cursor: pointer;
 
 	border-radius: 8px;
@@ -83,7 +85,7 @@ button.chip {
 	padding: 4px 8px;
 }
 
-button.chip.active, button.chip:hover {
+input[type="button"].chip.active, input[type="button"].chip:hover {
 	border: 1px solid transparent;
 
 	color: white;
