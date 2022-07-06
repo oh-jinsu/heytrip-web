@@ -179,7 +179,7 @@
 <form on:submit|preventDefault={onSubmit}>
 	<label>
 		이메일
-		<input type="email" bind:value={$email} />
+		<input type="email" placeholder="example@email.com" bind:value={$email} />
 	</label>
 	{#if emailMessage}
 		<p class="error">{emailMessage}</p>
@@ -251,7 +251,7 @@
 	}
 
 	.error {
-		color: red;
+		color: var(--error-color);
 
 		font-size: 12px;
 	}
