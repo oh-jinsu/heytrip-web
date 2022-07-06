@@ -94,7 +94,7 @@
 
 	const onSelectLocation = (value: string) => {
 		if ($selectedLocations.includes(value)) {
-			selectedLocations.set($selectedLocations.filter((e) => e !== value));
+			selectedLocations.set([]);
 		} else {
 			selectedLocations.set([...$selectedLocations, value]);
 		}
