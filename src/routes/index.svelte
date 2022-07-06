@@ -199,6 +199,7 @@
 	{#if locationMessage}
 		<p class="error">{locationMessage}</p>
 	{/if}
+  {$selectedLocations}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 분야 </label>
 	<div class="chip-container">
