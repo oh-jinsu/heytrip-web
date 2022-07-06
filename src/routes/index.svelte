@@ -91,13 +91,16 @@
 			return showReason();
 		}
 
-		const res = await fetch('https://api.heytrip.kr/v1/subscription', {
+		const res = await fetch(`${import.meta.env.VITE_API_HOST}/subscription`, {
 			method: 'POST',
 			body: JSON.stringify({
 				email: $email,
 				regions: $selectedRegions,
 				categories: $selectedCategories
-			})
+			}),
+			headers: {
+				"Content-Type": "application/json;charset=utf-8"
+			}
 		});
 
 		if (res.status !== 204) {
