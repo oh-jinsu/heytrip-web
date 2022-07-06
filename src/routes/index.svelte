@@ -123,7 +123,7 @@
 			const { code } = await res.json();
 
 			if (code === 5) {
-				alert('이미 구독을 완료했어요.');
+				alert('이미 구독을 신청했어요');
 			} else {
 				alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
 			}

@@ -1,25 +1,29 @@
-<script context="module" lang="ts">
-  export const load = async ({ params, fetch }: any) => {
-    const id = params["id"]
+<script>
+import { goto } from "$app/navigation";
 
-    const { ok } = await fetch(`${import.meta.env.VITE_API_HOST}/subscription/${id}/opt-in`, {
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/json;charset=utf-8"
-			}
-		});
+import { page } from "$app/stores";
+import { onMount } from "svelte";
 
-    if (!ok) {
-      return {
-        status: 302,
-        redirect: "/"
-      }
+let message = "잠시만 기다려 주세요."
+
+onMount(async () => {
+  const id = $page.params["id"]
+  
+  const { ok } = await fetch(`${import.meta.env.VITE_API_HOST}/subscription/${id}/opt-in`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
     }
+  });
 
-    return {
-      props: {}
-    }
+  if (!ok) {
+    goto("/", { replaceState: true })
+
+    return
   }
+
+  message = "구독을 완료했어요."
+})
 </script>
 
 <svelte:head>
@@ -27,4 +31,4 @@
 </svelte:head>
 
 <a href="/">홈으로 돌아가기</a>
-<h1>구독을 완료했습니다.</h1>
+<h1>{message}</h1>
