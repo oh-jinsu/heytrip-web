@@ -7,6 +7,8 @@
 	import { selectedRegions } from '$lib/stores/selected_regions';
 	import { onDestroy } from 'svelte';
 
+	let isPending = false;
+
 	let emailMessage = '';
 
 	const UnsubscribeEmail = email.subscribe((value) => {
@@ -48,6 +50,10 @@
 	});
 
 	const onSelectLocation = (value: string) => {
+		if (isPending) {
+			return;
+		}
+
 		if ($selectedRegions.includes(value)) {
 			selectedRegions.set($selectedRegions.filter((e) => e !== value));
 		} else {
@@ -56,6 +62,10 @@
 	};
 
 	const onSelectCategory = (value: string) => {
+		if (isPending) {
+			return;
+		}
+
 		if ($selectedCategories.includes(value)) {
 			selectedCategories.set($selectedCategories.filter((e) => e !== value));
 		} else {
@@ -82,6 +92,10 @@
 	};
 
 	const onSubmit = async () => {
+		if (isPending) {
+			return;
+		}
+
 		if (
 			!$email ||
 			!$isPrivacyAgreed ||
@@ -91,6 +105,8 @@
 			return showReason();
 		}
 
+		isPending = true;
+
 		const res = await fetch(`${import.meta.env.VITE_API_HOST}/subscription`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -99,28 +115,34 @@
 				categories: $selectedCategories
 			}),
 			headers: {
-				"Content-Type": "application/json;charset=utf-8"
+				'Content-Type': 'application/json;charset=utf-8'
 			}
 		});
 
 		if (res.status !== 204) {
-			const { code } = await res.json()
+			const { code } = await res.json();
 
-			if (code === 1) {
-				alert("이미 구독을 완료했어요.")
+			if (code === 5) {
+				alert('이미 구독을 완료했어요.');
 			} else {
 				alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
 			}
 
-			return
+			isPending = false;
+
+			return;
 		}
 
-		alert(`헤이트립을 구독해 주셔서 감사해요! 확인용 메일을 보내드렸어요. 내용을 확인하시고 구독 신청을 완료해 주세요.`);
+		alert(
+			`헤이트립을 구독해 주셔서 감사해요! 확인용 메일을 보내드렸어요. 내용을 확인하시고 구독 신청을 완료해 주세요.`
+		);
 
 		email.set('');
-		isPrivacyAgreed.set(false)
-		selectedCategories.set([])
-		selectedRegions.set([])
+		isPrivacyAgreed.set(false);
+		selectedCategories.set([]);
+		selectedRegions.set([]);
+
+		isPending = false;
 	};
 
 	onDestroy(() => {
@@ -146,7 +168,7 @@
 <form on:submit|preventDefault={onSubmit}>
 	<label>
 		이메일
-		<input type="email" placeholder="example@email.com" bind:value={$email} />
+		<input type="email" placeholder="example@email.com" bind:value={$email} disabled={isPending} />
 	</label>
 	{#if emailMessage}
 		<p class="error">{emailMessage}</p>
@@ -157,8 +179,9 @@
 		{#each regions as region}
 			<button
 				type="button"
-				class="chip {$selectedRegions.includes(region) && 'active'}"
+				class="chip {$selectedRegions.includes(region) && 'active'} {isPending && "pending"}"
 				on:click={() => onSelectLocation(region)}
+				disabled={isPending}
 				>{region}
 			</button>
 		{/each}
@@ -172,8 +195,9 @@
 		{#each categories as category}
 			<button
 				type="button"
-				class="chip {$selectedCategories.includes(category) && 'active'}"
+				class="chip {$selectedCategories.includes(category) && 'active'} {isPending && "pending"}"
 				on:click={() => onSelectCategory(category)}
+				disabled={isPending}
 			>
 				{category}
 			</button>
@@ -183,13 +207,13 @@
 		<p class="error">{categoryMessage}</p>
 	{/if}
 	<label>
-		<input type="checkbox" bind:checked={$isPrivacyAgreed} />
+		<input type="checkbox" bind:checked={$isPrivacyAgreed} disabled={isPending} />
 		<a href="/privacy">개인정보 수집 및 이용</a>에 동의합니다.
 	</label>
 	{#if privacyMessage}
 		<p class="error">{privacyMessage}</p>
 	{/if}
-	<input type="submit" value="무료로 구독하기" />
+	<input type="submit" class={isPending ? "pending" : ""} value={isPending ? "잠시만 기다려 주세요" : "무료로 구독하기"} disabled={isPending} />
 </form>
 
 <style>

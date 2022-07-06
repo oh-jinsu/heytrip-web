@@ -9,6 +9,7 @@
 	font-family: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
 		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
+	--disabled-color: #8e8e8e;
 	--lighten-primary-color: #5b5b5b;
 	--primary-color: #232323;
 	--error-color: rgb(214, 0, 0);
@@ -72,6 +73,10 @@ button:not(.chip), input[type="submit"] {
 	transition: background-color .2s ease;
 }
 
+button.pending:not(.chip), input[type="submit"].pending {
+	background-color: var(--disabled-color);
+}
+
 button.chip {
 	cursor: pointer;
 
@@ -84,6 +89,10 @@ button.chip {
 
 	margin: 0;
 	padding: 4px 8px;
+}
+
+button.pending, input[type="button"].pending, input[type="submit"].pending {
+	cursor: unset;
 }
 
 button.chip.active {
@@ -124,14 +133,14 @@ label>input {
 }
 
 @media (hover) {
-	button.chip:hover {
+	button.chip:hover:not(.pending) {
 		border: 1px solid transparent;
 	
 		color: white;
 		background-color: var(--primary-color);
 	}
 
-	input[type="submit"]:hover {
+	input[type="submit"]:hover:not(.pending) {
 		background-color: var(--lighten-primary-color);
 	}
 }
