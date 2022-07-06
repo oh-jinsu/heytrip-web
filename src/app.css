@@ -85,11 +85,18 @@ button.chip {
 	padding: 4px 8px;
 }
 
-button.chip.active, button.chip:hover {
+button.chip.active {
 	border: 1px solid transparent;
 
 	color: white;
 	background-color: var(--secondary-color);
+}
+
+button.chip:hover {
+	border: 1px solid transparent;
+
+	color: white;
+	background-color: var(--primary-color);
 }
 
 input[type="submit"]:hover {

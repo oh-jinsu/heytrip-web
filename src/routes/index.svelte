@@ -94,7 +94,7 @@
 
 	const onSelectLocation = (value: string) => {
 		if ($selectedLocations.includes(value)) {
-			selectedLocations.set([]);
+			selectedLocations.set($selectedLocations.filter((e) => e !== value));
 		} else {
 			selectedLocations.set([...$selectedLocations, value]);
 		}
@@ -188,34 +188,28 @@
 	<label> 관심 지역 </label>
 	<div class="chip-container">
 		{#each locations as location}
-			{#if $selectedLocations.includes(location)}
-				<button type="button" class="chip active" on:click={() => onSelectLocation(location)}
-					>{location}
-				</button>
-			{:else}
-				<button type="button" class="chip" on:click={() => onSelectLocation(location)}>
-					{location}
-				</button>
-			{/if}
+			<button
+				type="button"
+				class="chip {$selectedLocations.includes(location) && 'active'}"
+				on:click={() => onSelectLocation(location)}
+				>{location}
+			</button>
 		{/each}
 	</div>
 	{#if locationMessage}
 		<p class="error">{locationMessage}</p>
 	{/if}
-	{$selectedLocations}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 분야 </label>
 	<div class="chip-container">
 		{#each categories as category}
-		  {#if $selectedCategories.includes(category)}
-				<button type="button" class="chip active" on:click={() => onSelectCategory(category)}>
-          {category}
-				</button>
-			{:else}
-				<button type="button" class="chip" on:click={() => onSelectCategory(category)}>
-					{category}
-				</button>
-			{/if}
+			<button
+				type="button"
+				class="chip {$selectedCategories.includes(category) && 'active'}"
+				on:click={() => onSelectCategory(category)}
+			>
+				{category}
+			</button>
 		{/each}
 	</div>
 	{#if categoryMessage}
