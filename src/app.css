@@ -15,7 +15,7 @@
 	--text-color-400: #808080;
 	--text-color-700: #111111;
 
-	--screen-width: 768px;
+	--screen-width: 600px;
 }
 
 * {
@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 
-button {
+button:not(.chip), input[type="submit"] {
 	cursor: pointer;
 
 	width: 100%;
@@ -60,7 +60,28 @@ button {
 	transition: background-color .2s ease;
 }
 
-button:hover {
+button.chip {
+	cursor: pointer;
+
+	border-radius: 8px;
+	border: 1px solid var(--divider-color);
+	
+	background-color: white;
+
+	font-size: 14px;
+
+	margin: 0;
+	padding: 4px 8px;
+}
+
+button.chip.active, button.chip:hover {
+	border: 1px solid transparent;
+
+	color: white;
+	background-color: var(--secondary-color);
+}
+
+input[type="submit"]:hover {
 	background-color: var(--primary-color);
 }
 
