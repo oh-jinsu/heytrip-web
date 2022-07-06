@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { categories } from '$lib/constants/categories';
+	import { regions } from '$lib/constants/regions';
+	import { email } from '$lib/stores/email';
+	import { isPrivacyAgreed } from '$lib/stores/is_privacy_agreed';
+	import { selectedCategories } from '$lib/stores/selected_categories';
+	import { selectedRegions } from '$lib/stores/selected_regions';
 	import { onDestroy } from 'svelte';
-
-	import { writable } from 'svelte/store';
-
-	let email = writable('');
 
 	let emailMessage = '';
 
@@ -15,8 +17,6 @@
 		}
 	});
 
-	let isPrivacyAgreed = writable(false);
-
 	let privacyMessage = '';
 
 	const UnsubscribePrivacy = isPrivacyAgreed.subscribe((value) => {
@@ -27,19 +27,15 @@
 		}
 	});
 
-	const selectedLocations = writable<string[]>([]);
+	let regionMessage = '';
 
-	let locationMessage = '';
-
-	const UnsubscribeLocation = selectedLocations.subscribe((value) => {
-		if (locationMessage) {
+	const UnsubscribeLocation = selectedRegions.subscribe((value) => {
+		if (regionMessage) {
 			if (value.length > 0) {
-				locationMessage = '';
+				regionMessage = '';
 			}
 		}
 	});
-
-	const selectedCategories = writable<string[]>([]);
 
 	let categoryMessage = '';
 
@@ -51,52 +47,11 @@
 		}
 	});
 
-	const locations = [
-		'강남구',
-		'강동구',
-		'강북구',
-		'강서구',
-		'관악구',
-		'광진구',
-		'구로구',
-		'금천구',
-		'노원구',
-		'도봉구',
-		'동대문구',
-		'동작구',
-		'마포구',
-		'서대문구',
-		'서초구',
-		'성동구',
-		'성북구',
-		'송파구',
-		'양천구',
-		'영등포구',
-		'용산구',
-		'은평구',
-		'종로구',
-		'중구',
-		'중랑구'
-	];
-
-	const categories = [
-		'전시',
-		'축제',
-		'레저',
-		'콘서트',
-		'연극',
-		'뮤지컬',
-		'문학',
-		'서양음악',
-		'무용',
-		'전통예술'
-	];
-
 	const onSelectLocation = (value: string) => {
-		if ($selectedLocations.includes(value)) {
-			selectedLocations.set($selectedLocations.filter((e) => e !== value));
+		if ($selectedRegions.includes(value)) {
+			selectedRegions.set($selectedRegions.filter((e) => e !== value));
 		} else {
-			selectedLocations.set([...$selectedLocations, value]);
+			selectedRegions.set([...$selectedRegions, value]);
 		}
 	};
 
@@ -117,8 +72,8 @@
 			privacyMessage = '개인정보 수집 및 이용에 동의해 주세요.';
 		}
 
-		if ($selectedLocations.length === 0) {
-			locationMessage = '관심 지역을 선택해 주세요.';
+		if ($selectedRegions.length === 0) {
+			regionMessage = '관심 지역을 선택해 주세요.';
 		}
 
 		if ($selectedCategories.length === 0) {
@@ -130,30 +85,39 @@
 		if (
 			!$email ||
 			!$isPrivacyAgreed ||
-			$selectedLocations.length === 0 ||
+			$selectedRegions.length === 0 ||
 			$selectedCategories.length === 0
 		) {
 			return showReason();
 		}
 
-		const res = await fetch('https://api.heytrip.kr/v1/subscribes', {
+		const res = await fetch('https://api.heytrip.kr/v1/subscription', {
 			method: 'POST',
 			body: JSON.stringify({
 				email: $email,
-				locations: $selectedLocations,
+				regions: $selectedRegions,
 				categories: $selectedCategories
 			})
 		});
 
-		if (res.status !== 201) {
-			alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
+		if (res.status !== 204) {
+			const { code } = await res.json()
 
-			return;
+			if (code === 1) {
+				alert("이미 구독을 완료했어요.")
+			} else {
+				alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
+			}
+
+			return
 		}
 
-		alert(`감사합니다. 구독 확인 메일을 보냈어요. 확인해 주세요!`);
+		alert(`헤이트립을 구독해 주셔서 감사해요! 확인용 메일을 보내드렸어요. 내용을 확인하시고 구독 신청을 완료해 주세요.`);
 
 		email.set('');
+		isPrivacyAgreed.set(false)
+		selectedCategories.set([])
+		selectedRegions.set([])
 	};
 
 	onDestroy(() => {
@@ -187,17 +151,17 @@
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 지역 </label>
 	<div class="chip-container">
-		{#each locations as location}
+		{#each regions as region}
 			<button
 				type="button"
-				class="chip {$selectedLocations.includes(location) && 'active'}"
-				on:click={() => onSelectLocation(location)}
-				>{location}
+				class="chip {$selectedRegions.includes(region) && 'active'}"
+				on:click={() => onSelectLocation(region)}
+				>{region}
 			</button>
 		{/each}
 	</div>
-	{#if locationMessage}
-		<p class="error">{locationMessage}</p>
+	{#if regionMessage}
+		<p class="error">{regionMessage}</p>
 	{/if}
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 분야 </label>
