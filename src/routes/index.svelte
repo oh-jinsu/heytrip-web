@@ -1,16 +1,20 @@
 <script lang="ts" context="module">
 	export const load = async ({ fetch }: any) => {
-		const regions =await fetch(`${import.meta.env.VITE_API_HOST}/regions`).then((e: any) => e.json())
+		const regions = await fetch(`${import.meta.env.VITE_API_HOST}/regions`).then((e: any) =>
+			e.json()
+		);
 
-		const categories = await fetch(`${import.meta.env.VITE_API_HOST}/categories`).then((e: any) => e.json())
-	
+		const categories = await fetch(`${import.meta.env.VITE_API_HOST}/categories`).then((e: any) =>
+			e.json()
+		);
+
 		return {
-			props : {
+			props: {
 				regions,
-				categories,
+				categories
 			}
-		}
-	}
+		};
+	};
 </script>
 
 <script lang="ts">
@@ -19,9 +23,44 @@
 	import { selectedCategories } from '$lib/stores/selected_categories';
 	import { selectedRegions } from '$lib/stores/selected_regions';
 	import { onDestroy } from 'svelte';
+	import { writable } from 'svelte/store';
 
-	export let regions: string[]
-	export let categories: string[]
+	export let regions: string[];
+	export let categories: string[];
+
+	const treeRegions = (() => {
+		const result: Record<string, string[]> = {};
+
+		regions.forEach((e) => {
+			const [preffix] = e.split('/');
+
+			const array = result[preffix];
+
+			if (!array) {
+				result[preffix] = [];
+			}
+
+			result[preffix].push(e);
+		});
+
+		return result;
+	})();
+
+	const selectedPreffix = writable<string[]>([]);
+
+	const onSelectPreffix = (value: string) => {
+		if (isPending) {
+			return
+		}
+
+		if ($selectedPreffix.includes(value)) {
+			selectedPreffix.set($selectedPreffix.filter((e) => e !== value));
+			selectedRegions.set($selectedRegions.filter((e) => !treeRegions[value].includes(e)))
+		} else {
+			selectedPreffix.set([...$selectedPreffix, value]);
+			selectedRegions.set([...$selectedRegions, ...treeRegions[value]])
+		}
+	};
 
 	let isPending = false;
 
@@ -65,13 +104,21 @@
 		}
 	});
 
-	const onSelectLocation = (value: string) => {
+	const onSelectRegion = (value: string) => {
 		if (isPending) {
 			return;
 		}
 
 		if ($selectedRegions.includes(value)) {
 			selectedRegions.set($selectedRegions.filter((e) => e !== value));
+		
+			for (const [preffix, array] of Object.entries(treeRegions)) {
+				if (array.every((e) => !$selectedRegions.includes(e))) {
+					selectedPreffix.set($selectedPreffix.filter((e) => e !== preffix))
+					break;
+				}
+			}
+
 		} else {
 			selectedRegions.set([...$selectedRegions, value]);
 		}
@@ -157,20 +204,22 @@
 		isPrivacyAgreed.set(false);
 		selectedCategories.set([]);
 		selectedRegions.set([]);
+		selectedPreffix.set([]);
 
 		isPending = false;
 	};
 
-	const description = "시즌 맞춤 데이트 및 나들이 장소 추천 뉴스레터"
+	const description = '시즌 맞춤 데이트 및 나들이 장소 추천 뉴스레터';
 
 	const painpoints = [
-		"🥱 카페나 식당 혹은 영화관이 너무나 식상한 여러분",
-		"😔 웬만한 장소는 모두 한 번쯤 가 본 적 있는 여러분",
-		"🥲 재밌는 행사가 있는 줄도 모르고 지나치던 여러분",
-		"😩 주말마다 어디 갈지 찾아보는 일이 귀찮은 여러분",
-	]
+		'🥱 카페나 식당 혹은 영화관이 너무나 식상한 여러분',
+		'😔 웬만한 장소는 모두 한 번쯤 가 본 적 있는 여러분',
+		'🥲 재밌는 행사가 있는 줄도 모르고 지나치던 여러분',
+		'😩 주말마다 어디 갈지 찾아보는 일이 귀찮은 여러분'
+	];
 
-	const proposition = "📨 매주 지금이 아니면 갈 수 없는 색다른 장소를 찾아 성향에 맞게끔 간추려 보내드려요."
+	const proposition =
+		'📨 매주 지금이 아니면 갈 수 없는 색다른 장소를 찾아 성향에 맞게끔 간추려 보내드려요.';
 
 	onDestroy(() => {
 		UnsubscribeEmail();
@@ -182,21 +231,19 @@
 
 <svelte:head>
 	<title>헤이트립 Heytrip</title>
-	<meta name="description" content="{description} {proposition}"/>
+	<meta name="description" content="{description} {proposition}" />
 </svelte:head>
 
 <h1>Heytrip</h1>
-<p>{ description }</p>
+<!-- <p>{ description }</p> -->
 <ul class="painpoints">
 	{#each painpoints as item}
 		<li>
-			{ item }
+			{item}
 		</li>
 	{/each}
 </ul>
-<p>
-	{ proposition }
-</p>
+<p>{proposition}</p>
 <form on:submit|preventDefault={onSubmit}>
 	<label>
 		이메일
@@ -208,14 +255,26 @@
 	<!-- svelte-ignore a11y-label-has-associated-control -->
 	<label> 관심 지역 </label>
 	<div class="chip-container">
-		{#each regions as region}
+		{#each Object.keys(treeRegions) as preffix}
 			<button
 				type="button"
-				class="chip {$selectedRegions.includes(region) && 'active'} {isPending && "pending"}"
-				on:click={() => onSelectLocation(region)}
+				class="chip {$selectedPreffix.includes(preffix) && "active"} {isPending && 'pending'}"
+				on:click={() => onSelectPreffix(preffix)}
 				disabled={isPending}
-				>{region.substring(region.indexOf("/") + 1)}
+			>
+				{preffix}
 			</button>
+			{#if $selectedPreffix.includes(preffix)}
+				{#each treeRegions[preffix] as region}
+					<button
+						type="button"
+						class="chip {$selectedRegions.includes(region) && 'active'} {isPending && 'pending'}"
+						on:click={() => onSelectRegion(region)}
+						disabled={isPending}
+						>{region.substring(region.indexOf('/') + 1)}
+					</button>
+				{/each}
+			{/if}
 		{/each}
 	</div>
 	{#if regionMessage}
@@ -227,7 +286,7 @@
 		{#each categories as category}
 			<button
 				type="button"
-				class="chip {$selectedCategories.includes(category) && 'active'} {isPending && "pending"}"
+				class="chip {$selectedCategories.includes(category) && 'active'} {isPending && 'pending'}"
 				on:click={() => onSelectCategory(category)}
 				disabled={isPending}
 			>
@@ -245,7 +304,12 @@
 	{#if privacyMessage}
 		<p class="error">{privacyMessage}</p>
 	{/if}
-	<input type="submit" class={isPending ? "pending" : ""} value={isPending ? "잠시만 기다려 주세요" : "무료로 구독하기"} disabled={isPending} />
+	<input
+		type="submit"
+		class={isPending ? 'pending' : ''}
+		value={isPending ? '잠시만 기다려 주세요' : '무료로 구독하기'}
+		disabled={isPending}
+	/>
 </form>
 
 <style>
@@ -264,10 +328,6 @@
 		margin: 0;
 		margin-top: 8px;
 		padding: 0;
-	}
-	
-	p {
-		text-align: center;
 	}
 
 	label {
