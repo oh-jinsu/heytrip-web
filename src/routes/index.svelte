@@ -1,11 +1,27 @@
+<script lang="ts" context="module">
+	export const load = async ({ fetch }: any) => {
+		const regions =await fetch(`${import.meta.env.VITE_API_HOST}/regions`).then((e: any) => e.json())
+
+		const categories = await fetch(`${import.meta.env.VITE_API_HOST}/categories`).then((e: any) => e.json())
+	
+		return {
+			props : {
+				regions,
+				categories,
+			}
+		}
+	}
+</script>
+
 <script lang="ts">
-	import { categories } from '$lib/constants/categories';
-	import { regions } from '$lib/constants/regions';
 	import { email } from '$lib/stores/email';
 	import { isPrivacyAgreed } from '$lib/stores/is_privacy_agreed';
 	import { selectedCategories } from '$lib/stores/selected_categories';
 	import { selectedRegions } from '$lib/stores/selected_regions';
 	import { onDestroy } from 'svelte';
+
+	export let regions: string[]
+	export let categories: string[]
 
 	let isPending = false;
 
@@ -145,6 +161,17 @@
 		isPending = false;
 	};
 
+	const description = "시즌 맞춤 데이트 및 나들이 장소 추천 뉴스레터"
+
+	const painpoints = [
+		"🥱 뻔하디뻔한 카페와 식당 추천에 질려 버린 여러분께",
+		"😔 웬만한 장소는 모두 한 번쯤 가 본 적 있는 여러분께",
+		"🥲 재밌는 행사가 있는 줄도 모르고 지나치는 여러분께",
+		"😩 주말마다 어디 갈지 찾아보는 것도 귀찮은 여러분께",
+	]
+
+	const proposition = "📨 매주 지금이 아니면 갈 수 없는 색다른 장소를 찾아 성향에 맞게끔 간추려 보내드려요."
+
 	onDestroy(() => {
 		UnsubscribeEmail();
 		UnsubscribePrivacy();
@@ -155,15 +182,20 @@
 
 <svelte:head>
 	<title>헤이트립 Heytrip</title>
+	<meta name="description" content="{description} {proposition}"/>
 </svelte:head>
 
 <h1>Heytrip</h1>
+<p>{ description }</p>
+<ul class="painpoints">
+	{#each painpoints as item}
+		<li>
+			{ item }
+		</li>
+	{/each}
+</ul>
 <p>
-	🥱 모처럼 있는 휴일을 뻔하게 보내지 않고 매번 특별한 경험을 남기고 싶은 여러분께.
-	<br />
-	😫 다가오는 주말엔 또 어디를 가야 좋을지 여기저기 찾아다니는 일이 귀찮은 여러분께.
-	<br />
-	📨 매주 지금이 아니면 갈 수 없는 장소들을 찾아 성향에 꼭 맞게끔 간추려 보내드릴게요.
+	{ proposition }
 </p>
 <form on:submit|preventDefault={onSubmit}>
 	<label>
@@ -182,7 +214,7 @@
 				class="chip {$selectedRegions.includes(region) && 'active'} {isPending && "pending"}"
 				on:click={() => onSelectLocation(region)}
 				disabled={isPending}
-				>{region}
+				>{region.substring(region.indexOf("/") + 1)}
 			</button>
 		{/each}
 	</div>
@@ -218,8 +250,23 @@
 
 <style>
 	h1 {
-		font-size: 64px;
+		font-size: 56px;
 		font-family: 'Happiness-Sans-Title';
+		text-align: center;
+		color: var(--primary-color);
+	}
+
+	.painpoints {
+		align-self: center;
+
+		list-style: none;
+
+		margin: 0;
+		margin-top: 8px;
+		padding: 0;
+	}
+	
+	p {
 		text-align: center;
 	}
 
