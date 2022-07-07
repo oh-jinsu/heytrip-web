@@ -243,7 +243,7 @@
 		</li>
 	{/each}
 </ul>
-<p>{proposition}</p>
+<p class="proposition">{proposition}</p>
 <form on:submit|preventDefault={onSubmit}>
 	<label>
 		이메일
@@ -330,12 +330,16 @@
 		padding: 0;
 	}
 
-	label {
+	.proposition {
+		margin-top: 0;
+	}
+
+	label + label {
 		margin-top: 8px;
 	}
 
 	input[type='submit'] {
-		margin-top: 24px;
+		margin-top: 16px;
 	}
 
 	.chip-container {
