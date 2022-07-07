@@ -245,7 +245,7 @@
 </ul>
 <p class="proposition">{proposition}</p>
 <form on:submit|preventDefault={onSubmit}>
-	<label>
+	<label class="first">
 		이메일
 		<input type="email" placeholder="example@email.com" bind:value={$email} disabled={isPending} />
 	</label>
@@ -314,15 +314,13 @@
 
 <style>
 	h1 {
-		font-size: 56px;
+		font-size: 48px;
 		font-family: 'Happiness-Sans-Title';
 		text-align: center;
 		color: var(--primary-color);
 	}
 
 	.painpoints {
-		align-self: center;
-
 		list-style: none;
 
 		margin: 0;
@@ -334,12 +332,12 @@
 		margin-top: 0;
 	}
 
-	label + label {
+	label:not(.first) {
 		margin-top: 8px;
 	}
 
 	input[type='submit'] {
-		margin-top: 16px;
+		margin-top: 8px;
 	}
 
 	.chip-container {

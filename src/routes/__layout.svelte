@@ -19,6 +19,6 @@
 
     width: 100%;
     
-    padding: 0 16px;
+    padding: 16px;
   }
 </style>
