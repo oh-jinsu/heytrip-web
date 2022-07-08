@@ -113,9 +113,8 @@
 			selectedRegions.set($selectedRegions.filter((e) => e !== value));
 		
 			for (const [preffix, array] of Object.entries(treeRegions)) {
-				if (array.every((e) => !$selectedRegions.includes(e))) {
+				if (array.every((e) => !$selectedRegions.includes(e))) {	
 					selectedPreffix.set($selectedPreffix.filter((e) => e !== preffix))
-					break;
 				}
 			}
 
@@ -212,10 +211,10 @@
 	const description = '시즌 맞춤 데이트 및 나들이 장소 추천 뉴스레터';
 
 	const painpoints = [
-		'🥱 카페나 식당 혹은 영화관이 너무나 식상한 여러분',
-		'😔 웬만한 장소는 모두 한 번쯤 가 본 적 있는 여러분',
-		'🥲 재밌는 행사가 있는 줄도 모르고 지나치던 여러분',
-		'😩 주말마다 어디 갈지 찾아보는 일이 귀찮은 여러분'
+		'🥱 뻔한 카페나 식당 혹은 영화관에 질려버린 분들께',
+		'😔 웬만한 장소는 모두 한 번쯤 가 본 적 있는 분들께',
+		'🥲 재밌는 행사가 있는 줄도 모르고 지나치던 분들께',
+		'😩 주말마다 어디 갈지 찾아보는 일이 귀찮은 분들께'
 	];
 
 	const proposition =
