@@ -1,5 +1,14 @@
 <script lang="ts" context="module">
 	export const load = async ({ fetch }: any) => {
+		try {
+		 	await fetch(`${import.meta.env.VITE_API_HOST}/health`)
+		}	catch {
+			return {
+				status: 302,
+				redirect: "/service-unavailable"
+			}
+		}
+
 		const regions = await fetch(`${import.meta.env.VITE_API_HOST}/regions`).then((e: any) =>
 			e.json()
 		);
