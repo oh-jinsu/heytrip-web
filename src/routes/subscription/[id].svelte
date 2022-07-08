@@ -2,6 +2,7 @@
 import { goto } from "$app/navigation";
 
 import { page } from "$app/stores";
+import { endpoint } from "$lib/functions/fetch";
 import { onMount } from "svelte";
 
 let message = "잠시만 기다려 주세요."
@@ -9,7 +10,7 @@ let message = "잠시만 기다려 주세요."
 onMount(async () => {
   const id = $page.params["id"]
   
-  const { ok } = await fetch(`${import.meta.env.VITE_API_HOST}/subscription/${id}/opt-in`, {
+  const { ok } = await fetch(endpoint(`subscription/${id}/opt-in`), {
     method: 'POST',
     headers: {
       "Content-Type": "application/json;charset=utf-8"

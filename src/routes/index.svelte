@@ -1,21 +1,20 @@
 <script lang="ts" context="module">
+	import { endpoint } from '$lib/functions/fetch';
+
 	export const load = async ({ fetch }: any) => {
 		try {
-		 	await fetch(`${import.meta.env.VITE_API_HOST}/health`)
-		}	catch {
+			await fetch(endpoint('health'));
+		} catch {
 			return {
 				status: 302,
-				redirect: "/service-unavailable"
-			}
+				redirect: '/service-unavailable'
+			};
 		}
 
-		const regions = await fetch(`${import.meta.env.VITE_API_HOST}/regions`).then((e: any) =>
-			e.json()
-		);
-
-		const categories = await fetch(`${import.meta.env.VITE_API_HOST}/categories`).then((e: any) =>
-			e.json()
-		);
+		const [regions, categories] = await Promise.all([
+			fetch(endpoint('regions')).then((e: any) => e.json()),
+			fetch(endpoint('categories')).then((e: any) => e.json())
+		]);
 
 		return {
 			props: {
@@ -59,15 +58,15 @@
 
 	const onSelectPreffix = (value: string) => {
 		if (isPending) {
-			return
+			return;
 		}
 
 		if ($selectedPreffix.includes(value)) {
 			selectedPreffix.set($selectedPreffix.filter((e) => e !== value));
-			selectedRegions.set($selectedRegions.filter((e) => !treeRegions[value].includes(e)))
+			selectedRegions.set($selectedRegions.filter((e) => !treeRegions[value].includes(e)));
 		} else {
 			selectedPreffix.set([...$selectedPreffix, value]);
-			selectedRegions.set([...$selectedRegions, ...treeRegions[value]])
+			selectedRegions.set([...$selectedRegions, ...treeRegions[value]]);
 		}
 	};
 
@@ -120,13 +119,12 @@
 
 		if ($selectedRegions.includes(value)) {
 			selectedRegions.set($selectedRegions.filter((e) => e !== value));
-		
+
 			for (const [preffix, array] of Object.entries(treeRegions)) {
-				if (array.every((e) => !$selectedRegions.includes(e))) {	
-					selectedPreffix.set($selectedPreffix.filter((e) => e !== preffix))
+				if (array.every((e) => !$selectedRegions.includes(e))) {
+					selectedPreffix.set($selectedPreffix.filter((e) => e !== preffix));
 				}
 			}
-
 		} else {
 			selectedRegions.set([...$selectedRegions, value]);
 		}
@@ -266,7 +264,7 @@
 		{#each Object.keys(treeRegions) as preffix}
 			<button
 				type="button"
-				class="chip {$selectedPreffix.includes(preffix) && "active"} {isPending && 'pending'}"
+				class="chip {$selectedPreffix.includes(preffix) && 'active'} {isPending && 'pending'}"
 				on:click={() => onSelectPreffix(preffix)}
 				disabled={isPending}
 			>
