@@ -1,24 +1,24 @@
 <script>
-  import Footer from "$lib/components/footer.svelte";
+	import Footer from '$lib/components/footer.svelte';
 
-  import "../app.css"
+	import '../app.css';
 </script>
 
 <main>
-  <slot />
+	<slot />
 </main>
 <Footer />
 
-<style >
-  main {
-    display: flex;
+<style>
+	main {
+		display: flex;
 
-    flex-direction: column;
-    
-    max-width: var(--screen-width);
+		flex-direction: column;
 
-    width: 100%;
-    
-    padding: 16px;
-  }
+		max-width: var(--screen-width);
+
+		width: 100%;
+
+		padding: 16px;
+	}
 </style>

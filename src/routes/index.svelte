@@ -26,6 +26,7 @@
 </script>
 
 <script lang="ts">
+	import Meta from '$lib/components/meta.svelte';
 	import { email } from '$lib/stores/email';
 	import { isPrivacyAgreed } from '$lib/stores/is_privacy_agreed';
 	import { selectedCategories } from '$lib/stores/selected_categories';
@@ -235,10 +236,10 @@
 	});
 </script>
 
-<svelte:head>
-	<title>헤이트립 Heytrip</title>
-	<meta name="description" content="{description} {proposition}" />
-</svelte:head>
+<Meta
+	description="{description} {proposition}"
+	keywords={['시즌', '데이트', '나들이', '추천', '뉴스레터']}
+/>
 
 <h1>Heytrip</h1>
 <!-- <p>{ description }</p> -->

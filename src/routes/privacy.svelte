@@ -1,6 +1,8 @@
-<svelte:head>
-  <title>개인정보 수집 및 이용 - 헤이트립 Heytrip</title>
-</svelte:head>
+<script>
+	import Meta from '$lib/components/meta.svelte';
+</script>
+
+<Meta description="헤이트립의 개인정보 수집 및 이용 방침입니다." keywords={["개인정보"]} />
 
 <a href="/">홈으로 돌아가기</a>
 <h1>개인정보 수집 및 이용</h1>
