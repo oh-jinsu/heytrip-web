@@ -102,6 +102,10 @@ button.chip.active {
 	background-color: var(--primary-color);
 }
 
+button.chip.active::before {
+	content: "✓ ";
+}
+
 label {
 	display: block;
 
