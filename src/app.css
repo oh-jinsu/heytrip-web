@@ -44,6 +44,12 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 
+img {
+	max-width: 100%;
+	
+	object-fit: cover;
+}
+
 button, input[type="button"], input[type="submit"] {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;

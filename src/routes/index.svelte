@@ -241,8 +241,6 @@
 	keywords={['시즌', '데이트', '나들이', '추천', '뉴스레터']}
 />
 
-<h1>Heytrip</h1>
-<!-- <p>{ description }</p> -->
 <ul class="painpoints">
 	{#each painpoints as item}
 		<li>
@@ -320,13 +318,6 @@
 </form>
 
 <style>
-	h1 {
-		font-size: 48px;
-		font-family: 'Happiness-Sans-Title';
-		text-align: center;
-		color: var(--primary-color);
-	}
-
 	.painpoints {
 		list-style: none;
 
