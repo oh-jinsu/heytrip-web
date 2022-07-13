@@ -17,7 +17,7 @@
     align-items: center;
 
     width: 100%;
-    height: 144px;
+    height: 128px;
 
     overflow: hidden;
   }
@@ -51,7 +51,7 @@
   }
 
   h1 {
-    font-size: 56px;
+    font-size: 48px;
 
 		font-family: 'Happiness-Sans-Title';
 
