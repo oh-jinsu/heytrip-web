@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
+	const origin = $page.url.origin;
+
+	const url = $page.url.toString();
+
 	const TITLE = '헤이트립 Heytrip';
 
 	export let title = '';
@@ -9,11 +13,9 @@
 
   export let keywords: string[] = []
 
-	export let thumbnail = '';
+	export let thumbnail = `${origin}/hanriver.jpg`;
 
 	export let noindex = false;
-
-	const url = $page.url.toString();
 </script>
 
 <svelte:head>
