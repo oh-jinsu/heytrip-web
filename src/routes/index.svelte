@@ -279,7 +279,7 @@ import { regions } from '$lib/constants/region';
 	{/if}
 	<label>
 		<input type="checkbox" bind:checked={$isPrivacyAgreed} disabled={isPending} />
-		<a href="/privacy">개인정보 수집 및 이용</a>에 동의합니다.
+		<a href="/privacy">개인정보 수집 및 이용</a>에 동의할게요.
 	</label>
 	{#if privacyMessage}
 		<p class="error">{privacyMessage}</p>
