@@ -1,41 +1,13 @@
-<script lang="ts" context="module">
-	import { endpoint } from '$lib/functions/fetch';
-
-	export const load = async ({ fetch }: any) => {
-		try {
-			await fetch(endpoint('health'));
-		} catch {
-			return {
-				status: 302,
-				redirect: '/service-unavailable'
-			};
-		}
-
-		const [regions, categories] = await Promise.all([
-			fetch(endpoint('regions')).then((e: any) => e.json()),
-			fetch(endpoint('categories')).then((e: any) => e.json())
-		]);
-
-		return {
-			props: {
-				regions,
-				categories
-			}
-		};
-	};
-</script>
-
 <script lang="ts">
 	import Meta from '$lib/components/meta.svelte';
+import { categories } from '$lib/constants/categories';
+import { regions } from '$lib/constants/region';
 	import { email } from '$lib/stores/email';
 	import { isPrivacyAgreed } from '$lib/stores/is_privacy_agreed';
 	import { selectedCategories } from '$lib/stores/selected_categories';
 	import { selectedRegions } from '$lib/stores/selected_regions';
 	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
-
-	export let regions: string[];
-	export let categories: string[];
 
 	const treeRegions = (() => {
 		const result: Record<string, string[]> = {};
@@ -177,35 +149,39 @@
 
 		isPending = true;
 
-		const res = await fetch(`${import.meta.env.VITE_API_HOST}/subscription`, {
-			method: 'POST',
-			body: JSON.stringify({
-				email: $email,
-				regions: $selectedRegions,
-				categories: $selectedCategories
-			}),
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
+		try {
+			const res = await fetch(`${import.meta.env.VITE_API_HOST}/subscription`, {
+				method: 'POST',
+				body: JSON.stringify({
+					email: $email,
+					regions: $selectedRegions,
+					categories: $selectedCategories
+				}),
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			});
+
+			if (res.status !== 204) {
+				const { code } = await res.json();
+
+				if (code === 5) {
+					alert('이미 구독을 신청했어요');
+				} else {
+					alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
+				}
+
+				isPending = false;
+
+				return;
 			}
-		});
 
-		if (res.status !== 204) {
-			const { code } = await res.json();
-
-			if (code === 5) {
-				alert('이미 구독을 신청했어요');
-			} else {
-				alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
-			}
-
-			isPending = false;
-
-			return;
+			alert(
+				`헤이트립을 구독해 주셔서 감사해요! 확인용 메일을 보내드렸어요. 내용을 확인하시고 구독 신청을 완료해 주세요.`
+			);
+		} catch {
+			alert('잠시 오류가 생겼어요. 다음에 다시 시도해 주세요.');
 		}
-
-		alert(
-			`헤이트립을 구독해 주셔서 감사해요! 확인용 메일을 보내드렸어요. 내용을 확인하시고 구독 신청을 완료해 주세요.`
-		);
 
 		email.set('');
 		isPrivacyAgreed.set(false);
